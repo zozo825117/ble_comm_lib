@@ -15,23 +15,42 @@
 // #define  WIRE_SPI_MODE4
 #define  WIRE_SPI_MODE3
 
-#define WL1601_CE_Pin PORT_Pin_8
-#define WL1601_CE_Port PORT_0
+#define WL1601_CE_Pin PORT_Pin_6
+#define WL1601_CE_Port PORT_5
 
-#define WL1601_CSN_Pin PORT_Pin_0
+#define WL1601_CSN_Pin PORT_Pin_5
 #define WL1601_CSN_Port PORT_5
 
-#define WL1601_SCK_Pin PORT_Pin_3
+#define WL1601_SCK_Pin PORT_Pin_4
 #define WL1601_SCK_Port PORT_5
 
-#define WL1601_MOSI_Pin PORT_Pin_1
+#define WL1601_MOSI_Pin PORT_Pin_3
 #define WL1601_MOSI_Port PORT_5
 
-#define WL1601_MISO_Pin PORT_Pin_2
+#define WL1601_MISO_Pin PORT_Pin_3
 #define WL1601_MISO_Port PORT_5
 
-#define WL1601_PKT_Pin PORT_Pin_12
-#define WL1601_PKT_Port PORT_0
+#define WL1601_PKT_Pin PORT_Pin_2
+#define WL1601_PKT_Port PORT_5
+
+//#define WL1601_CE_Pin PORT_Pin_8
+//#define WL1601_CE_Port PORT_0
+
+//#define WL1601_CSN_Pin PORT_Pin_5
+//#define WL1601_CSN_Port PORT_5
+
+//#define WL1601_SCK_Pin PORT_Pin_4
+//#define WL1601_SCK_Port PORT_5
+
+//#define WL1601_MOSI_Pin PORT_Pin_3
+//#define WL1601_MOSI_Port PORT_5
+
+//#define WL1601_MISO_Pin PORT_Pin_3
+//#define WL1601_MISO_Port PORT_5
+
+//#define WL1601_PKT_Pin PORT_Pin_12
+//#define WL1601_PKT_Port PORT_0
+
 
 #define WL1601_CE_Output()           WL1601_CE_Port->Pn_DIR &=~ WL1601_CE_Pin
                                     
@@ -118,6 +137,11 @@ void spi_init(void);
 void DrvSPI_SendByte2PHASE(unsigned char dat);  //16M主頻->执行一次需要24us
 unsigned char DrvSPI_ReceiveByte2PHASE(void);   //16M主頻->执行一次需要24us
 
+u8 phy_read_reg(u8 reg);
+void phy_write_reg(u8 reg,u8 val);
+void phy_write_reg_bit(u8 reg,u8 bits,u8 val);
+void phy_read_fifo(u8 reg, u8 *buf, u8 len);
+void phy_write_fifo(u8 reg, u8 *buf, u8 len);
 
 /* Public Data declaration --------------------------------------------------*/
 

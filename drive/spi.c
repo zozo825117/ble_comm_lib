@@ -112,6 +112,137 @@ void spi_init(void)
     DRVWL1601B_CE1;
   	
 }
+
+void delay_1ms(uint16_t u32Cnt){
+  uint32_t counter = u32Cnt<<11;
+  while (counter-- > 0) {
+    __nop();
+  }
+}
+
+
+/**
+ * 函数：phy_read_reg
+ * 功能：读RF寄存器
+ * 参数：reg----要读取的寄存器地址
+ * 返回：读取到的值
+ */
+u8 phy_read_reg(u8 reg)
+{
+   	unsigned char reg_val;	    
+   	DRVSPI_CSN0;              	 //使能SPI传输     	   	
+   	DrvSPI_SendByte2PHASE(reg | 0x80);    //发送寄存器号
+   	reg_val = DrvSPI_ReceiveByte2PHASE();//读取寄存器内容
+   	DRVSPI_CSN1;              	 //禁止SPI传输     	   	    
+   	return(reg_val);           	 //返回状态值
+	
+}
+
+/**
+ * 函数：phy_write_reg
+ * 功能：写RF寄存器
+ * 参数：reg----要读取的寄存器地址
+ * 			 val---值
+ * 返回：无
+ */
+void phy_write_reg(u8 reg,u8 val)
+{
+   	DRVSPI_CSN0;    //使能SPI传输
+   	DrvSPI_SendByte2PHASE(reg);     //发送寄存器号 
+   	DrvSPI_SendByte2PHASE(val);   //写入寄存器的值
+   	DRVSPI_CSN1;    //禁止SPI传输   
+}
+
+/**
+ * 函数：phy_read_reg_bit
+ * 功能：读RF寄存器某一位
+ * 参数：reg----要读取的寄存器地址
+ * 			 bits----位
+ * 返回：0 或 1
+ */
+
+//u8 phy_read_reg_bit(u8 reg,u8 bits)
+//{
+//	data u8 val;
+//	data u8 bit_val = (1 << bits);
+//	
+//	val = phy_read_reg(reg);
+//	
+//	return (val & bit_val) ? 1 : 0;
+//}
+/**
+ * 函数：phy_write_reg_bit
+ * 功能：写RF寄存器某一位
+ * 参数：reg----要读取的寄存器地址
+ * 			 bits----位
+ * 			 val----值  0 或 1
+ * 返回：无
+ */
+void phy_write_reg_bit(u8 reg,u8 bits,u8 val)
+{
+
+	u8 tmp;
+	u8 bit_val = (1 << bits);
+	
+	tmp = phy_read_reg(reg);
+	if (val) {
+			tmp |= bit_val;
+	} else {
+			tmp &= ~bit_val;
+	}
+
+	phy_write_reg(reg, tmp);
+
+}
+
+
+/**
+ * 函数：phy_read_fifo
+ * 功能：读取RF FIFO中的数据
+ * 参数：reg----要读取的寄存器地址
+ * 			 buf----读取缓存地址
+ * 			 len----读取长度
+ * 返回：无
+ */
+void phy_read_fifo(u8 reg, u8 *buf, u8 len) 
+{
+
+   	unsigned char lu8i;
+
+   	DRVSPI_CSN0;	//使能SPI传输
+   	DrvSPI_SendByte2PHASE(reg | 0x80);	//发送寄存器号
+   	for(lu8i=0; lu8i<len; lu8i++)
+    {
+        buf[lu8i]=DrvSPI_ReceiveByte2PHASE();
+    }
+   	DRVSPI_CSN1;	//禁止SPI传输
+
+}
+
+/**
+ * 函数：phy_write_fifo
+ * 功能：往RF FIFO中写数据
+ * 参数：reg----寄存器地址
+ * 			 buf----数据缓存地址
+ * 			 len----写入长度
+ * 返回：无
+ */
+void phy_write_fifo(u8 reg, u8 *buf, u8 len) 
+{
+
+   	unsigned char lu8i;    	
+   	
+   	DRVSPI_CSN0;        //使能SPI传输
+   	DrvSPI_SendByte2PHASE(reg);    	 //发送寄存器号 
+   	for(lu8i=0; lu8i<len; lu8i++)
+    {
+        DrvSPI_SendByte2PHASE(*buf++); //写入数据
+    }
+   	DRVSPI_CSN1;        //禁止SPI传输
+
+}
+
+
 /*******************************************************************************
     Function:           
     Description:        
@@ -141,9 +272,9 @@ void Chip_Reset(void)
   DrvSPI_SendByte2PHASE(0x04);   //写入寄存器的值
   DRVSPI_CSN1;    //禁止SPI传输   
   DRVSPI_CSN0;
-  delay_ms(20);
+  delay_1ms(20);
   DRVSPI_CSN1;
-  delay_ms(10);
+  delay_1ms(10);
   /** 
     设置3线SPI通信 
   */
