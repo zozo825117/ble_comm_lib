@@ -399,6 +399,11 @@
               <FileType>1</FileType>
               <FilePath>..\app\mian.c</FilePath>
             </File>
+            <File>
+              <FileName>GW32L0xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\app\GW32L0xx_it.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -543,6 +548,11 @@
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\drive\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drive\system.c</FilePath>
             </File>
           </Files>
         </Group>
