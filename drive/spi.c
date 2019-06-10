@@ -113,12 +113,12 @@ void spi_init(void)
   	
 }
 
-void delay_1ms(uint16_t u32Cnt){
-  uint32_t counter = u32Cnt<<11;
-  while (counter-- > 0) {
-    __nop();
-  }
-}
+// void delay_1ms(uint16_t u32Cnt){
+//   uint32_t counter = u32Cnt<<11;
+//   while (counter-- > 0) {
+//     __nop();
+//   }
+// }
 
 
 /**
@@ -272,9 +272,9 @@ void Chip_Reset(void)
   DrvSPI_SendByte2PHASE(0x04);   //写入寄存器的值
   DRVSPI_CSN1;    //禁止SPI传输   
   DRVSPI_CSN0;
-  delay_1ms(20);
+  delay_ms(20);
   DRVSPI_CSN1;
-  delay_1ms(10);
+  delay_ms(10);
   /** 
     设置3线SPI通信 
   */

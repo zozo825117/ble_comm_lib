@@ -256,16 +256,16 @@ BLE_API_RESULT_T Ble_SendData(uint8_t len, uint8_t *data);
 *******************************************************************************
 * 
 * This function is reversed now
-* 
 *
-*   Errors codes                     | Description
-*   ------------                     | -----------
-*   CYBLE_ERROR_OK                   | On successful operation.
-*   CYBLE_ERROR_INVALID_PARAMETER    | On specifying NULL as input parameter.
-*   CYBLE_ERROR_INVALID_OPERATION    | Operation is not permitted when device is in connected state.
+* \param uint8_t pause :  
+*                       1: pause ble session 
+*                       0: resume ble session 
+*
+* \return BLE_STATE_T
+*
 *
 ******************************************************************************/
-// BLE_API_RESULT_T Ble_pauseSession(void);
+BLE_STATE_T Ble_pauseSession(uint8_t pasue);
 
 /******************************************************************************
 * Function Name: Ble_DisConnect

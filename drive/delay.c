@@ -20,12 +20,12 @@ void SysTick_Configuration(void)
 void delay_us(uint32_t u32Cnt)
 {
     uint32_t u32end;
+		u32end = 0x1000000 - SystemCoreClock/1000000;
 	
     while(u32Cnt-- > 0)
     {
         SysTick->VAL = 0;
-
-        u32end = 0x1000000 - SystemCoreClock/100000;
+   
         while(SysTick->VAL > u32end)
         {
             ;
@@ -38,12 +38,12 @@ void delay_us(uint32_t u32Cnt)
 void delay_ms(uint32_t u32Cnt)
 {
     uint32_t u32end;
-	
+		u32end = 0x1000000 - SystemCoreClock/1000;
     while(u32Cnt-- > 0)
     {
         SysTick->VAL = 0;
 
-        u32end = 0x1000000 - SystemCoreClock/1000;
+        
         while(SysTick->VAL > u32end)
         {
             ;
