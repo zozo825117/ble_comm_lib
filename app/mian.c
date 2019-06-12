@@ -191,7 +191,7 @@ void testTask(void)
 		/*dis connect test*/
 		if(Ble_GetState() == BLE_STATE_CONNECTED){
  				if(Timer_Time_Elapsed(timeDisconnectTimer, 50000)){   //50s
- 					Debug_Print(DEBUG_MESSAGE_LEVEL_4,"not operated time exceed %d s\r\n", (3000/100));
+ 					Debug_Print(DEBUG_MESSAGE_LEVEL_4,"not operated time exceed %d s\r\n", (50000/100));
  					
 					if(Ble_DisConnect() == BLE_ERROR_OK){
 
