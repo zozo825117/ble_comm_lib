@@ -78,10 +78,10 @@
 #define DEBUG_MESSAGE_LEVEL_4             (04u)
 #define DEBUG_MESSAGE_LEVEL_5             (05u)
 #define DEBUG_MESSAGE_LEVEL_6             (06u)
-#define DEBUG_MESSAGE_LEVEL_7             (07u)
+#define DEBUG_MESSAGE_LEVEL_7			(07u)
 
-#define DEBUG_PORT												0
-#define DEBUG_PIN													4
+#define DEBUG_PORT							0
+#define DEBUG_PIN							4
 
 #ifdef DEBUG_PRINT
 

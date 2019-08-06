@@ -231,17 +231,24 @@ int main()
 	uint8_t mac_buf[6];
 	uint8_t name_buf[16];
 
+	/*时钟初始化*/
+	CMU_Configuration();
+	SystemCoreClock = (HSE_VALUE);
 	/*串口初始化*/
 	Debug_Print_Init();
 	Debug_Print_Start(DEBUG_MESSAGE_LEVEL_4);
 	Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Debug_Print_Start\r\n");
+
+	Debug_Print(DEBUG_MESSAGE_LEVEL_4,"SystemCoreClock=%d\r\n", SystemCoreClock);
+
+
 	test_pin();
 	// wdt_init();   //看门狗初始化
 
 	uart_rx_ok = 0;
 	SysTick_Configuration();
 	/**/
-	Ble_Init(TIMER_1,TIMER1_IRQn,CMU_APBPeriph0_TIMER1,HSI_VALUE,app_callback);
+	Ble_Init(TIMER_1,TIMER1_IRQn,CMU_APBPeriph0_TIMER1,SystemCoreClock,app_callback);
 
 
 
