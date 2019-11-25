@@ -17,12 +17,17 @@
 u8 g24_send(u8 *dat,u8 len,u8 ch);
 u8 g24_init(void);
 
-u8 bMacAddr[] = {0xCC,0xAA,0x11,0x00,0x21,0x11};
+//uint8_t bMacAddr[] = {0xCC,0xAA,0x11,0x00,0x21,0x11};
 
-const u8 test_2_4_dat[]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+uint8_t bMacAddr[] = {0x00,0x00,0x00,0x00,0x00,0x28};
 
+const uint8_t test_2_4_dat[]={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+
+uint8_t cmd_1[] = {0xAA,0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x6C,0x0A};
+uint8_t cmd_2[] = {0xAA,0x06,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x68,0xF6};
 
 uint8_t device_name[] = "ble uart";
+//uint8_t device_name[] = "CLW-BLE000";
 uint8_t wait2_4G = 0;
 uint32_t time_tick=0;
 uint32_t timeCloseTimer = 0;
@@ -106,9 +111,9 @@ void TIMER1_IRQHandler(void)
 * Note:
 * None
 *****************************************************************************/
-void app_callback(u32 event, uint8_t * eventParam)
+void app_callback(uint32_t event, uint8_t * eventParam)
 {
-	u8 i;
+	uint8_t i;
 	switch(event){
 		case BLE_EVT_STACK_ON:
 				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"BLE_EVT_STACK_ON ble_state= %d\r\n", eventParam[0]);
@@ -160,16 +165,28 @@ void app_callback(u32 event, uint8_t * eventParam)
 				
 			break;
 
+		case BLE_EVT_GAP_SCAN_RESPONSE:
+				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"BLE_EVT_GAP_SCAN_RESPONSE data=0x");
+				for(i=0;i<10;i++){
+					Debug_Print(DEBUG_MESSAGE_LEVEL_4," %x", eventParam[i]);
+				}
+				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"\r\n");
+
+				//for ble no deal close
+				timeDisconnectTimer = Timer_Get_Time_Stamp();
+				
+			break;
+
 	}
 }
 
 void testTask(void)
 {
-	u8 i;
+	//u8 i;
 		// *10ms
 		if(test_step == 0){
 			if(Ble_GetState() == BLE_STATE_INITIALIZING || Ble_GetState() == BLE_STATE_STOPPED){
-				if(Ble_Start() == BLE_ERROR_OK){
+				if(Ble_Start(50) == BLE_ERROR_OK){
 					Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_Start ok\r\n");
 				}	
 			}
@@ -190,20 +207,20 @@ void testTask(void)
 
 		/*dis connect test*/
 		if(Ble_GetState() == BLE_STATE_CONNECTED){
- 				if(Timer_Time_Elapsed(timeDisconnectTimer, 50000)){   //50s
- 					Debug_Print(DEBUG_MESSAGE_LEVEL_4,"not operated time exceed %d s\r\n", (50000/100));
+ 				// if(Timer_Time_Elapsed(timeDisconnectTimer, 50000)){   //50s
+ 				// 	Debug_Print(DEBUG_MESSAGE_LEVEL_4,"not operated time exceed %d s\r\n", (50000/100));
  					
-					if(Ble_DisConnect() == BLE_ERROR_OK){
+					// if(Ble_DisConnect() == BLE_ERROR_OK){
 
-							Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_DisConnect ok\r\n");
-							timeCloseTimer = Timer_Get_Time_Stamp();
-							test_step = 2;
-					}else{
-						Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_DisConnect error state=%d\r\n",Ble_GetState());
-					}
-					timeDisconnectTimer = Timer_Get_Time_Stamp();
+					// 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_DisConnect ok\r\n");
+					// 		timeCloseTimer = Timer_Get_Time_Stamp();
+					// 		test_step = 2;
+					// }else{
+					// 	Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_DisConnect error state=%d\r\n",Ble_GetState());
+					// }
+					// timeDisconnectTimer = Timer_Get_Time_Stamp();
 
- 				}
+ 				// }
 
  				if(uart_rx_ok){
  					if(Ble_SendData(uart_rx_buf[1],&uart_rx_buf[2]) == BLE_ERROR_OK){
@@ -225,8 +242,8 @@ void testTask(void)
 int main()
 {
 	
-	u8 i;
-	u8 state_tmp;
+	//u8 i;
+	//u8 state_tmp;
 	
 	uint8_t mac_buf[6];
 	uint8_t name_buf[16];
@@ -254,20 +271,20 @@ int main()
 
 	if(Ble_GetMac(mac_buf) == BLE_ERROR_OK){
 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,
-					"default mac = 0x%x%x%x%x%x%x\r\n", mac_buf[0],mac_buf[1],mac_buf[2],mac_buf[3],mac_buf[4],mac_buf[5]);
+					"default mac = 0x%x%x%x%x%x%x\r\n", mac_buf[5],mac_buf[4],mac_buf[3],mac_buf[2],mac_buf[1],mac_buf[0]);
 	}
 	else{
 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_GetMac error\r\n");
 	}
 
-	if(Ble_SetMac(bMacAddr) == BLE_ERROR_OK){
-			Ble_GetMac(mac_buf);
-			Debug_Print(DEBUG_MESSAGE_LEVEL_4,
-			"new mac = 0x%x%x%x%x%x%x\r\n", mac_buf[0],mac_buf[1],mac_buf[2],mac_buf[3],mac_buf[4],mac_buf[5]);
-	}
-	else{
-		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_SetMac error\r\n");
-	}
+	// if(Ble_SetMac(bMacAddr) == BLE_ERROR_OK){
+	// 		Ble_GetMac(mac_buf);
+	// 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,
+	// 		"new mac = 0x%x%x%x%x%x%x\r\n", mac_buf[0],mac_buf[1],mac_buf[2],mac_buf[3],mac_buf[4],mac_buf[5]);
+	// }
+	// else{
+	// 	Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_SetMac error\r\n");
+	// }
 
 	memset(name_buf, 0 , sizeof(name_buf));
 	if(Ble_GetName(name_buf) == BLE_ERROR_OK){
@@ -300,24 +317,24 @@ int main()
 			runTimeTimer = Timer_Get_Time_Stamp();
 		}
 
-		if(!wait2_4G){
-			if(Timer_Time_Elapsed(send2_4GTimer,7000)){
+		// if(!wait2_4G){
+		// 	if(Timer_Time_Elapsed(send2_4GTimer,7000)){
 
-				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"send 2.4G\r\n");
-				state_tmp = Ble_pauseSession(1);
-				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_pauseSession pause state = %d\r\n",state_tmp);
-				g24_init();
-				g24_send((u8 *)test_2_4_dat,sizeof(test_2_4_dat),48);
-				send2_4GTimer = Timer_Get_Time_Stamp();
-				wait2_4G = 1;
-			}
-		}else{
-			if(Timer_Time_Elapsed(send2_4GTimer,50)){
-				state_tmp = Ble_pauseSession(0);
-				Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_pauseSession resume state = %d\r\n",state_tmp);
-				wait2_4G = 0;
-			}
-		}
+		// 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"send 2.4G\r\n");
+		// 		state_tmp = Ble_pauseSession(1);
+		// 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_pauseSession pause state = %d\r\n",state_tmp);
+		// 		g24_init();
+		// 		g24_send((u8 *)test_2_4_dat,sizeof(test_2_4_dat),48);
+		// 		send2_4GTimer = Timer_Get_Time_Stamp();
+		// 		wait2_4G = 1;
+		// 	}
+		// }else{
+		// 	if(Timer_Time_Elapsed(send2_4GTimer,50)){
+		// 		state_tmp = Ble_pauseSession(0);
+		// 		Debug_Print(DEBUG_MESSAGE_LEVEL_4,"Ble_pauseSession resume state = %d\r\n",state_tmp);
+		// 		wait2_4G = 0;
+		// 	}
+		// }
 
 
 		

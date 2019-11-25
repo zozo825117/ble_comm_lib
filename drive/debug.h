@@ -56,7 +56,7 @@
 #define _DEBUG_H_
 
 #include "GW32L.h"
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 /* Macros for the toggling the GPIO */
 #ifdef ENABLE_DEBUG_PIN
 #define DEBUG_PIN_LOW                   //Debug_Pin_Write(0)
@@ -83,7 +83,7 @@
 #define DEBUG_PORT							0
 #define DEBUG_PIN							4
 
-#ifdef DEBUG_PRINT
+
 
 // #define DEBUG_UART_PERIPH_CLOCK  CMU_APBPeriph0_UART4
 // #define DEBUG_UART               UART_4
@@ -101,6 +101,7 @@
 #define DEBUG_UART_IRQ           UART5_IRQn
 #define DEBUG_UART_IRQ_HEADER    UART5_IRQHandler
 
+#ifdef DEBUG_PRINT
 /*****************************************************************************
 * Function Name: Debug_Print_Init()
 ******************************************************************************
@@ -156,6 +157,7 @@ void Debug_Print(uint8_t level, char *pszFmt,...);
 #else
 #define Debug_Print_Start(x)
 #define Debug_Print(x,pszFmt,...)
+void myprintf(char *s, ...);
 #endif /* DEBUG_PRINT */
 
 #endif /* _DEBUG_H_ */

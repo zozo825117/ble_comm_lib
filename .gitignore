@@ -219,7 +219,11 @@ pip-log.txt
 #############
 # User-specific uVision files
 *.opt
-
+*.uvopt
+*.uvoptx
+*.uvgui
+*.uvgui.*
+*.uvguix.*
 
 # Listing files
 *.cod
@@ -241,6 +245,7 @@ pip-log.txt
 *.elf
 *.hex
 *.h86
+*.lib
 *.obj
 *.o
 *.sbr
@@ -305,5 +310,7 @@ pip-log.txt
 #Project/Debug/Obj
 JLinkLog.txt
 RTE_Components.h
+.tags
+.tags_sorted_by_file
 
 

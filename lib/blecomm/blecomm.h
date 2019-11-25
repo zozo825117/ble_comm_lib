@@ -7,6 +7,8 @@
 * This file contains API for ble communication ble stack.
 *
 ******************************************************************************/
+#ifndef __BLECOMM_H__
+#define __BLECOMM_H__
 #include "GW32L.h"
 #include "GW32L0xx_port.h"
 #include "spi.h"
@@ -58,7 +60,10 @@ typedef enum
             0 stop  clear when ble connect 
     */
     BLE_EVT_GAPP_ADVERTISEMENT_START_STOP,
-
+/** This event is ble receive master scan response event.  
+            eventParam : scan respones data from master. 
+        */
+    BLE_EVT_GAP_SCAN_RESPONSE,
     /** This event is ble connect event.  
             eventParam : link_id[2]  characteristic value of current link, create at connecting. 
         */
@@ -209,7 +214,8 @@ BLE_API_RESULT_T Ble_SetName(uint8_t *deviceName);
 * 
 * This function start Bluetooth device with Advertising.
 * 
-* \param None
+* \param 
+*  uint16_t time_out
 * 
 * \return
 *  CYBLE_API_RESULT_T : Return value indicates if the function succeeded or 
@@ -224,7 +230,7 @@ BLE_API_RESULT_T Ble_SetName(uint8_t *deviceName);
 * Note:
 *       if already ble start will return BLE_ERROR_INVALID_OPERATION
 ******************************************************************************/
-BLE_API_RESULT_T Ble_Start(void);
+BLE_API_RESULT_T Ble_Start(uint16_t time_out);
 
 /******************************************************************************
 * Function Name: Ble_SendData
@@ -365,3 +371,5 @@ void Ble_ProcessEvents(void);
 * 
 ******************************************************************************/
 void Ble_BackgroudProcess(void);
+
+#endif /*__BLECOMM_H__*/
